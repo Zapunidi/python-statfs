@@ -7,7 +7,7 @@ VERSION = "0.0.1"
 
 def build_native(spec):
     build = spec.add_external_build(
-        cmd=["gcc", "-g", "-shared", "statfs.c", "-o", "libstatfs.so"],
+        cmd=["gcc", "-fPIC", "-g", "-shared", "statfs.c", "-o", "libstatfs.so"],
         path="./src",
     )
 
