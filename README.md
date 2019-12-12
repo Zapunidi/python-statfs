@@ -12,7 +12,7 @@ The `python-statfs` package provides a `statfs` module with a `statfs` function.
 
 Installation:
 
-	pip install https://github.com/Mortal/python-statfs/releases/download/v0.0.1/statfs-0.0.1-py2.py3-none-manylinux1_x86_64.whl
+	pip install https://github.com/Mortal/python-statfs/releases/download/v0.0.2/statfs-0.0.2-py2.py3-none-manylinux1_x86_64.whl
 
 Example usage:
 

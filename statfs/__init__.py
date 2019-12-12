@@ -8,7 +8,7 @@ Statfs = collections.namedtuple("Statfs", "type bsize blocks bfree bavail files 
 
 def statfs(path):
     buf = _ffi.new("struct python_statfs *")
-    rv = _lib.python_statfs(path.encode(), buf, _ffi.sizeof(buf[0]))
+    rv = _lib.python_statfs(path.encode("utf-8"), buf, _ffi.sizeof(buf[0]))
     if rv < 0:
         raise Exception("python_statfs failed (TODO: check errno)")
     return Statfs(**{f: getattr(buf[0], "f_" + f) for f in Statfs._fields})
