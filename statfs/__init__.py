@@ -1,4 +1,6 @@
 import collections
+import errno
+import os
 
 from ._native import lib as _lib, ffi as _ffi
 
@@ -10,7 +12,35 @@ def statfs(path):
     buf = _ffi.new("struct python_statfs *")
     rv = _lib.python_statfs(path.encode("utf-8"), buf, _ffi.sizeof(buf[0]))
     if rv < 0:
-        raise Exception("python_statfs failed (TODO: check errno)")
+        # Check expected from the manual errors first
+        if _ffi.errno == errno.EACCES:
+            error_message = "(statfs()) Search permission is denied for a component of the path prefix of path."
+        elif _ffi.errno == errno.EBADF:
+            error_message = "(fstatfs()) fd is not a valid open file descriptor."
+        elif _ffi.errno == errno.EFAULT:
+            error_message = "buf or path points to an invalid address."
+        elif _ffi.errno == errno.EINTR:
+            error_message = "This call was interrupted by a signal."
+        elif _ffi.errno == errno.EIO:
+            error_message = "An I/O error occurred while reading from the file system."
+        elif _ffi.errno == errno.ELOOP:
+            error_message = "(statfs()) Too many symbolic links were encountered in translating path."
+        elif _ffi.errno == errno.ENAMETOOLONG:
+            error_message = "(statfs()) path is too long."
+        elif _ffi.errno == errno.ENOENT:
+            error_message = "(statfs()) The file referred to by path does not exist."
+        elif _ffi.errno == errno.ENOMEM:
+            error_message = "Insufficient kernel memory was available."
+        elif _ffi.errno == errno.ENOSYS:
+            error_message = "The file system does not support this call."
+        elif _ffi.errno == errno.ENOTDIR:
+            error_message = "(statfs()) A component of the path prefix of path is not a directory."
+        elif _ffi.errno == errno.EOVERFLOW:
+            error_message = "Some values were too large to be represented in the returned struct."
+        else:
+            # Fallback to general errors description
+            error_message = os.strerror(_ffi.errno)
+        raise Exception("python_statfs failed. {} errno = {}, {}.".format(error_message, _ffi.errno, errno.errorcode[_ffi.errno]))
     return Statfs(**{f: getattr(buf[0], "f_" + f) for f in Statfs._fields})
 
 
