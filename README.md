@@ -21,3 +21,7 @@ Example usage:
 	Statfs(type=16914836, bsize=4096, blocks=4092618, bfree=4087672, bavail=4087672, files=4092618, ffree=4092531, fsid=0, namelen=255, frsize=4096, flags=38)
 	>>> statfs.statfs("/tmp").type == statfs.TMPFS_MAGIC
 	True
+
+Build:
+
+    python3 setup.py bdist_wheel
